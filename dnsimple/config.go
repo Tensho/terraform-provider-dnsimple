@@ -2,10 +2,11 @@ package dnsimple
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/dnsimple/dnsimple-go/dnsimple"
-	"github.com/hashicorp/terraform-plugin-sdk/httpclient"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
 	"golang.org/x/oauth2"
 )
 
@@ -35,7 +36,8 @@ func (c *Config) Client() (*Client, error) {
 	tc := oauth2.NewClient(context.Background(), ts)
 
 	client := dnsimple.NewClient(tc)
-	client.SetUserAgent(httpclient.TerraformUserAgent(c.terraformVersion))
+
+	client.SetUserAgent(fmt.Sprintf("HashiCorp Terraform/%s (+https://www.terraform.io) Terraform Plugin SDK/%s", c.terraformVersion, meta.SDKVersionString()))
 	if c.Sandbox {
 		client.BaseURL = baseURLSandbox
 	}
